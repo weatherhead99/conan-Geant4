@@ -40,7 +40,6 @@ class Geant4Conan(ConanFile):
         cmake.definitions["GEANT4_USE_HDF5"] = self.options.HDF5
         cmake.definitions["GEANT4_USE_GDML"] = self.options.GDML
         cmake.definitions["GEANT4_USE_MOTIF"] = self.options.Motif
-        #TODO: check is this for win32???
         cmake.definitions["GEANT4_USE_WT"] = self.options.Wt
 
         #disable using system libs (except CLHEP!!)
