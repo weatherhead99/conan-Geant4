@@ -13,4 +13,6 @@ class TestPackageGeant4(ConanFile):
         cmake.build()
 
     def test(self):
-        pass
+        with tools.environment_append(RunEnvironment(self).vars):
+            bin_path = os.path.join("bin","test_g4_find_package")
+            self.run(bin_path)
