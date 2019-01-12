@@ -4,6 +4,8 @@ import os
 G4_10_04_p02_SHA = "6491862ba2be32c902e488ceb6b0f5189ccb4c8827f4906eea6b23782ac81a59"
 G4_10_05_SHA = "2a86499d8327abc68456e5d7fc0303824e5704322291b331857cf4042286656e"
 
+expat_version = "2.2.5"
+
 class Geant4Conan(ConanFile):
     name = "Geant4"
     version = "10.05"
@@ -32,7 +34,8 @@ class Geant4Conan(ConanFile):
                 "freetype=True"
     generators = "cmake"
 
-    requires = "zlib/1.2.11@conan/stable", "expat/2.2.5@bincrafters/stable"
+
+    requires = "zlib/1.2.11@conan/stable", "expat/%s@bincrafters/stable" % expat_version
     exports_sources = "conan_geant4_cmake.patch"
 
     def requirements(self):
@@ -53,6 +56,8 @@ class Geant4Conan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        #fix a version detection issue in conan expat package
+        cmake.definitions["EXPAT_VERSION_STRING"] = expat_version
 
         if self.settings.cppstd:
             cmake.definitions["GEANT4_BUILD_CXXSTD"] = str(self.settings.cppstd).strip("gnu")
