@@ -1,0 +1,17 @@
+Index: geant4.10.05/CMakeLists.txt
+===================================================================
+--- geant4.10.05.orig/CMakeLists.txt
++++ geant4.10.05/CMakeLists.txt
+@@ -35,6 +35,12 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX
+ #   in tests/examples which are subprojects. All calls must use
+ #   the same form.
+ project(Geant4)
++
++### add conan project configuration-----
++include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
++conan_basic_setup()
++#---------------------------------------
++
+ set(${PROJECT_NAME}_VERSION_MAJOR 10)
+ set(${PROJECT_NAME}_VERSION_MINOR  5)
+ set(${PROJECT_NAME}_VERSION_PATCH  0)

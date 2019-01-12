@@ -33,7 +33,7 @@ class Geant4Conan(ConanFile):
     generators = "cmake"
 
     requires = "zlib/1.2.11@conan/stable", "expat/2.2.5@bincrafters/stable"
-    exports_sources = "patch_geant4_cmake.patch"
+    exports_sources = "conan_geant4_cmake.patch"
 
     def requirements(self):
         if self.options.Qt:
@@ -49,7 +49,7 @@ class Geant4Conan(ConanFile):
                   filename="geant4.%s.tar.gz" % self.version)
 
         srcpath = os.path.join(self.source_folder,"geant4.%s" % self.version)
-        tools.patch(srcpath,patch_file="patch_geant4_cmake.patch",strip=1)
+        tools.patch(srcpath,patch_file="conan_geant4_cmake.patch",strip=1)
 
     def build(self):
         cmake = CMake(self)
