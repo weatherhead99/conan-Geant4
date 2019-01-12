@@ -1,6 +1,7 @@
 #include <iostream>
 #include <G4UIExecutive.hh>
 #include <memory>
+#include <G4ios.hh>
 
 int main(int argc, char** argv)
 {
