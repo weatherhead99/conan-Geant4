@@ -21,7 +21,7 @@ class Geant4Conan(ConanFile):
                "Wt" : [True, False],
                "install_data" : [True, False]
     }
-    default_options = "shared=False","build_cxxstd=auto","HDF5=False","install_data=True", "Wt=False", \
+    default_options = "shared=False","HDF5=False","install_data=True", "Wt=False", \
                                "GDML=False","inventor=False","openGL=True","Qt=True","Motif=False","Win32=False"
     generators = "cmake"
 
@@ -29,7 +29,7 @@ class Geant4Conan(ConanFile):
 
     def requirements(self):
         if self.options.Qt:
-            self.requires("qt/5.12@bincrafters/stable")
+            self.requires("qt/5.12.0@bincrafters/stable")
         if self.options.HDF5:
             self.requires("hdf5/1.10.3@arsen-studio/stable")
     
