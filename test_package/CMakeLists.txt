@@ -19,3 +19,4 @@ target_compile_definitions(test_g4_find_package PUBLIC ${Geant4_DEFINITIONS})
 if(Geant4_multithreaded_FOUND)
 target_link_libraries(test_g4_find_package PUBLIC Threads::Threads)
 endif()
+
