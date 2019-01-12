@@ -14,22 +14,22 @@ class Geant4Conan(ConanFile):
     description = "Geant4 is a toolkit for the simulation of the passage of particles through matter."
     settings = "cppstd", "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
-               "HDF5" : [True, False],
-               "GDML" : [True, False],
-               "inventor" : [True, False],
-               "openGL" : [True, False],
-               "Qt" : [True, False],
-               "Motif" : [True, False],
-               "Win32" : [True, False],
-               "Wt" : [True, False],
-               "install_data" : [True, False],
-               "multithreaded" : [True, False],
-               "muonic_atoms" : [True, False],
-               "verbose" : [True, False],
-               "freetype" : [True, False]
+               "HDF5": [True, False],
+               "GDML": [True, False],
+               "inventor": [True, False],
+               "openGL": [True, False],
+               "Qt": [True, False],
+               "Motif": [True, False],
+               "Win32": [True, False],
+               "Wt": [True, False],
+               "install_data": [True, False],
+               "multithreaded": [True, False],
+               "muonic_atoms": [True, False],
+               "verbose": [True, False],
+               "freetype": [True, False]
     }
-    default_options = "shared=False","HDF5=False","install_data=False", "Wt=False", \
-                "GDML=False","inventor=False","openGL=True","Qt=True","Win32=False",\
+    default_options = "shared=False", "HDF5=False", "install_data=False", "Wt=False", \
+                "GDML=False", "inventor=False", "openGL=True", "Qt=True", "Win32=False",\
                 "Motif=False", "multithreaded=True", "muonic_atoms=False", "verbose=True",\
                 "freetype=True"
     generators = "cmake"
@@ -45,18 +45,24 @@ class Geant4Conan(ConanFile):
             self.requires("hdf5/1.10.3@arsen-studio/stable")
         if self.options.freetype:
             self.requires("freetype/2.9.0@bincrafters/stable")
-    
+
+    def config_options(self):
+        if self.options.multithreaded:
+            if self.settings.os == "Windows":
+                self.output.warn("multithreading is not supported on Windows")
+                self.options.multithreaded = False
+            
     def source(self):
         tools.get("http://cern.ch/geant4-data/releases/geant4.%s.tar.gz" % self.version,
                   sha256=G4_10_05_SHA,
                   filename="geant4.%s.tar.gz" % self.version)
 
-        srcpath = os.path.join(self.source_folder,"geant4.%s" % self.version)
-        tools.patch(srcpath,patch_file="conan_geant4_cmake.patch",strip=1)
+        srcpath = os.path.join(self.source_folder, "geant4.%s" % self.version)
+        tools.patch(srcpath,patch_file="conan_geant4_cmake.patch", strip=1)
 
     def build(self):
         cmake = CMake(self)
-        #fix a version detection issue in conan expat package
+        # fix a version detection issue in conan expat package
         cmake.definitions["EXPAT_VERSION_STRING"] = expat_version
 
         if self.settings.cppstd:
@@ -77,11 +83,11 @@ class Geant4Conan(ConanFile):
         
         
         
-        #disable using system libs (except CLHEP!!)
+        # disable using system libs (except CLHEP!!)
         cmake.definitions["GEANT4_USE_SYSTEM_EXPAT"] = True
         cmake.definitions["GEANT4_USE_SYSTEM_ZLIB"] = True
 
-        #examples just take up space
+        # examples just take up space
         cmake.definitions["GEANT4_INSTALL_EXAMPLES"] = False
         
         if not self.options.shared:
@@ -91,12 +97,13 @@ class Geant4Conan(ConanFile):
         cmake.build()
         cmake.install()
 
-
     def package(self):
         pass
     
     def package_info(self):
         self.cpp_info.includedirs=["include/Geant4/","include"]
         self.cpp_info.libs=tools.collect_libs(self)
+        if self.settings.os == "Linux" and self.options.multithreaded:
+            self.cpp_info.libs.append("pthread")
 
 
