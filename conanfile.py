@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake, tools
+import os
 
 G4_10_04_p02_SHA = "6491862ba2be32c902e488ceb6b0f5189ccb4c8827f4906eea6b23782ac81a59"
 G4_10_05_SHA = "2a86499d8327abc68456e5d7fc0303824e5704322291b331857cf4042286656e"
@@ -32,6 +33,7 @@ class Geant4Conan(ConanFile):
     generators = "cmake"
 
     requires = "zlib/1.2.11@conan/stable", "expat/2.2.5@bincrafters/stable"
+    exports_sources = "patch_geant4_cmake.patch"
 
     def requirements(self):
         if self.options.Qt:
@@ -45,6 +47,9 @@ class Geant4Conan(ConanFile):
         tools.get("http://cern.ch/geant4-data/releases/geant4.%s.tar.gz" % self.version,
                   sha256=G4_10_05_SHA,
                   filename="geant4.%s.tar.gz" % self.version)
+
+        srcpath = os.path.join(self.source_folder,"geant4.%s" % self.version)
+        tools.patch(srcpath,patch_file="patch_geant4_cmake.patch",strip=1)
 
     def build(self):
         cmake = CMake(self)
@@ -64,6 +69,8 @@ class Geant4Conan(ConanFile):
         cmake.definitions["GEANT4_BUILD_MUONIC_ATOMS_IN_USE"] = self.options.muonic_atoms
         cmake.definitions["GEANT4_BUILD_VERBOSE_CODE"] = self.options.verbose
         cmake.definitions["GEANT4_USE_OPENGL_X11"] = self.options.openGL
+        
+        
         
         #disable using system libs (except CLHEP!!)
         cmake.definitions["GEANT4_USE_SYSTEM_EXPAT"] = True
