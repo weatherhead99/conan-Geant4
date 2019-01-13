@@ -41,14 +41,18 @@ class Geant4Conan(ConanFile):
 
     def system_requirements(self):
         spt = SystemPackageTool()
-        if self.options.openGL:
-            if os_info.linux_distro == "ubuntu":
-                pack_names = ["libgl1-mesa-dev", "libglu1-mesa-dev"]
-            elif "opensuse" in os_info.linux_distro:
-                pack_names = ["Mesa-libGL-devel"]
-            else:
-                self.output.error("distro: %s" % os_info.linux_distro)
-                pack_names = []
+        pack_names = []
+        if os_info.linux_distro == "ubuntu":
+            if self.options.openGL:
+                pack_names.extend(["libgl1-mesa-dev", "libglu1-mesa-dev"])
+            pack_names.append("libxmu-dev")
+        elif "opensuse" in os_info.linux_distro:
+            if self.options.openGL:
+                pack_names.extend(["Mesa-libGL-devel"])
+            pack_names.append("libXmu-devel")
+        else:
+            self.output.error("distro: %s" % os_info.linux_distro)
+            pack_names = []
 
         spt.update()
 
