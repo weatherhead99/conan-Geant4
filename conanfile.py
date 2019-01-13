@@ -42,6 +42,14 @@ class Geant4Conan(ConanFile):
     def system_requirements(self):
         spt = SystemPackageTool()
         pack_names = []
+
+        if os_info.linux_distro == "ubuntu":
+            suffix_32 = ":i386"
+        elif "opensuse" in os_info.linux_distro:
+            suffix_32 = "-32bit"
+        else:
+            suffix_32 = ""
+        
         if os_info.linux_distro == "ubuntu":
             if self.options.openGL:
                 pack_names.extend(["libgl1-mesa-dev", "libglu1-mesa-dev"])
@@ -57,7 +65,10 @@ class Geant4Conan(ConanFile):
         spt.update()
 
         for pack in pack_names:
-            spt.install(pack)
+            if self.settings.arch == "x86":
+                spt.install(pack + suffix_32)
+            else:
+                spt.install(pack)
         
     def requirements(self):
         if self.options.Qt:
