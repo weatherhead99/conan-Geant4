@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake, tools
+from conans.tools import SystemPackageTool, os_info
 import os
 
 G4_10_04_p02_SHA = "6491862ba2be32c902e488ceb6b0f5189ccb4c8827f4906eea6b23782ac81a59"
@@ -38,6 +39,22 @@ class Geant4Conan(ConanFile):
     requires = "zlib/1.2.11@conan/stable", "expat/%s@bincrafters/stable" % expat_version
     exports_sources = "conan_geant4_cmake.patch"
 
+    def system_requirements(self):
+        spt = SystemPackageTool()
+        if self.options.openGL:
+            if os_info.linux_distro == "ubuntu":
+                pack_names = ["libgl1-mesa-dev", "libglu1-mesa-dev"]
+            elif "opensuse" in os_info.linux_distro:
+                pack_names = ["Mesa-libGL-devel"]
+            else:
+                self.output.error("distro: %s" % os_info.linux_distro)
+                pack_names = []
+
+        spt.update()
+
+        for pack in pack_names:
+            spt.install(pack)
+        
     def requirements(self):
         if self.options.Qt:
             self.requires("qt/5.12.0@bincrafters/stable")
