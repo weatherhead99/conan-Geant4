@@ -52,7 +52,7 @@ class Geant4Conan(ConanFile):
         
         if os_info.linux_distro == "ubuntu":
             if self.options.openGL:
-                pack_names.extend(["libgl1-mesa-dev", "libglu1-mesa-dev", "freeglut3-dev"])
+                pack_names.extend(["libgl1-mesa-dev", "libglu1-mesa-dev", "freeglut3-dev", "libgl1-mesa-glx"])
             pack_names.append("libxmu-dev")
         elif "opensuse" in os_info.linux_distro:
             if self.options.openGL:
