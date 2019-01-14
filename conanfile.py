@@ -43,6 +43,8 @@ class Geant4Conan(ConanFile):
         spt = SystemPackageTool()
         pack_names = []
 
+        if not os_info.is_linux:
+            return
         if os_info.linux_distro == "ubuntu":
             suffix_32 = ":i386"
         elif "opensuse" in os_info.linux_distro:
@@ -83,6 +85,8 @@ class Geant4Conan(ConanFile):
             if self.settings.os == "Windows":
                 self.output.warn("multithreading is not supported on Windows")
                 self.options.multithreaded = False
+        if self.settings.os == "Windows":
+            del self.options.Motif
             
     def source(self):
         tools.get("http://cern.ch/geant4-data/releases/geant4.%s.tar.gz" % self.version,
